@@ -89,9 +89,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
-/* harmony import */ var _film_film_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./film/film.component */ "./src/app/film/film.component.ts");
-/* harmony import */ var _film_list_film_list_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./film-list/film-list.component */ "./src/app/film-list/film-list.component.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
+/* harmony import */ var _film_film_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./film/film.component */ "./src/app/film/film.component.ts");
+/* harmony import */ var _film_list_film_list_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./film-list/film-list.component */ "./src/app/film-list/film-list.component.ts");
+
+
 
 
 
@@ -104,15 +108,17 @@ var AppModule = /** @class */ (function () {
     AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["NgModule"])({
             declarations: [
-                _app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"],
-                _film_film_component__WEBPACK_IMPORTED_MODULE_4__["FilmComponent"],
-                _film_list_film_list_component__WEBPACK_IMPORTED_MODULE_5__["FilmListComponent"]
+                _app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"],
+                _film_film_component__WEBPACK_IMPORTED_MODULE_6__["FilmComponent"],
+                _film_list_film_list_component__WEBPACK_IMPORTED_MODULE_7__["FilmListComponent"]
             ],
             imports: [
-                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"]
+                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
+                _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"],
+                _angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HttpClientModule"]
             ],
             providers: [],
-            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"]]
+            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"]]
         })
     ], AppModule);
     return AppModule;
