@@ -86,7 +86,7 @@ public class FilmController {
 	
 	// trying to make a find by genre (above) paginated
 	@GetMapping("api/test/{genreId}")
-	public ResponseEntity<PageFilmDTO> findByGenreTest(@PathVariable long genreId) {
+	public ResponseEntity<PageFilmDTO> findByGenreTest(@PathVariable long genreId, Pageable page) {
 		
 		// long way round:
 		List<Film> raw = new ArrayList<>();
@@ -97,10 +97,26 @@ public class FilmController {
 		Page<Film> found = new PageImpl<Film>(raw); // works, but DTO does not work
 		PageFilmDTO dto = new PageFilmDTO(found);
 		
-		// works, but DTO cannot change page size
-		Pageable pageable = PageRequest.of(0, 5);
-		Page<Film> found2 = new PageImpl<Film>(raw, pageable, raw.size());
+
+		Page<Film> found2 = new PageImpl<Film>(raw, page, raw.size()); // page from input --> add page to service/repo
 		PageFilmDTO dto2 = new PageFilmDTO(found2); 
+
+		/*
+		Page<Film> films = filmserive.find();
+		List<FilmDto> filmDto = films.getContent().stream()
+								.map(FilmDto::new)
+								.collect(Collectors.toList());
+		Page<FilmDto> dto = new PageImpl<FilmDTO>(filmDto, page, films.getTotalElements());
+
+		frontend: 
+		- does not need a model og a Page object
+		- enough to say private page: any;
+		- then take any data from page
+		- for ex 'blahblah.subscribe(
+			(res: any) => {
+				this.page = res;
+			});'
+		*/
 
 				
 		return new ResponseEntity<>(dto2, HttpStatus.OK);
