@@ -7,6 +7,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +31,7 @@ import korzoApp.service.GenreService;
 import korzoApp.web.dto.AddFilmDTO;
 import korzoApp.web.dto.FilmDTO;
 import korzoApp.web.dto.GenreDTO;
+import korzoApp.web.dto.PageFilmDTO;
 
 @RestController
 public class FilmController {
@@ -48,38 +53,27 @@ public class FilmController {
 	
 	// the search will be a search form, so all of these 
 	//individual searches/get methods will be basically useless
-	
-	private void findFilmGenre(FilmDTO filmDto) { // add another parameter - the List<FilmGenre> which is
-													// made in the http requests themselves
-		
-		List<FilmGenre> filmgenre = filmGenreService.findAll(); // i don't want to create
-																// a new list for every dto, though
-		List<GenreDTO> dtos = new ArrayList<>();
-		
-		for (FilmGenre film : filmgenre) { // try to lambda stream this
-			if (film.getFilm().getId() == filmDto.getId()) {
-				GenreDTO dto = new GenreDTO(film); // collect dtos to list 
-				dtos.add(dto); // setGenres to filmDto after the stream is done
-			}
-		}
-		
-		filmDto.setGenres(dtos);
-	}
-	
-	@GetMapping("api/films")
-	public ResponseEntity<List<FilmDTO>> findAll() {
-		
-		List<FilmDTO> films = filmService.findAll().stream()
-								.map(FilmDTO::new)
-								.collect(Collectors.toList());
-		
-		films.stream()
-			.forEach(this::findFilmGenre);
 
+	
+	// find all, sort alphabetically
+	@GetMapping("api/films")
+	public ResponseEntity<PageFilmDTO> findAll(Pageable page) {
 		
-		return new ResponseEntity<>(films, HttpStatus.OK);
+		PageFilmDTO dto = new PageFilmDTO(filmService.findAllOrdered(page));
+		
+		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 	
+	// find by title, sort alphabetically
+	@GetMapping("api/films/title")
+	public ResponseEntity<PageFilmDTO> findTitleOrdered(@RequestParam String q, Pageable page) {
+		
+		PageFilmDTO dto = new PageFilmDTO(filmService.findTitleOrdered(q, page));
+		
+		return new ResponseEntity<>(dto, HttpStatus.OK);
+	}
+	
+	// find by genre
 	@GetMapping("api/films/genre/{genreId}")
 	public ResponseEntity<List<FilmDTO>> findByGenre(@PathVariable long genreId) {
 		
@@ -90,46 +84,26 @@ public class FilmController {
 		return new ResponseEntity<>(films, HttpStatus.OK);
 	}
 	
-	@GetMapping("api/films/title")
-	public ResponseEntity<List<FilmDTO>> findFilmByTitle(@RequestParam String query) {
+	// trying to make a find by genre (above) paginated
+	@GetMapping("api/test/{genreId}")
+	public ResponseEntity<PageFilmDTO> findByGenreTest(@PathVariable long genreId) {
 		
-		List<FilmDTO> dtos = filmService.findByTitle(query).stream()
-							.map(FilmDTO::new)
-							.collect(Collectors.toList());
+		// long way round:
+		List<Film> raw = new ArrayList<>();
 		
-		dtos.stream()
-			.forEach(this::findFilmGenre);
+		filmService.findByGenre(genreId).stream()
+			.forEach(f -> raw.add(f.getFilm()));
 		
+		Page<Film> found = new PageImpl<Film>(raw); // works, but DTO does not work
+		PageFilmDTO dto = new PageFilmDTO(found);
 		
-		return new ResponseEntity<>(dtos, HttpStatus.OK);
-	}
-	
-	@GetMapping("api/films/year")
-	public ResponseEntity<List<FilmDTO>> findFilmByYear(@RequestParam int query) {
-		
-		List<FilmDTO> dtos = filmService.findByYear(query).stream()
-							.map(FilmDTO::new)
-							.collect(Collectors.toList());
-		
-		dtos.stream()
-			.forEach(this::findFilmGenre);
-		
-		return new ResponseEntity<>(dtos, HttpStatus.OK);
-	}
-	
-	@GetMapping("api/films/period")
-	public ResponseEntity<List<FilmDTO>> findFilmsByYearRange(@RequestParam int from, 
-															@RequestParam int to) {
-		
-		List<FilmDTO> dtos = filmService.findByYearRage(to, from).stream()
-							.map(FilmDTO::new)
-							.collect(Collectors.toList());
-		
-		dtos.stream()
-			.forEach(this::findFilmGenre);
-		
-		return new ResponseEntity<>(dtos, HttpStatus.OK);
-		
+		// works, but DTO cannot change page size
+		Pageable pageable = PageRequest.of(0, 5);
+		Page<Film> found2 = new PageImpl<Film>(raw, pageable, raw.size());
+		PageFilmDTO dto2 = new PageFilmDTO(found2); 
+
+				
+		return new ResponseEntity<>(dto2, HttpStatus.OK);
 	}
 	
 	@GetMapping("api/films/{filmId}")
@@ -137,15 +111,15 @@ public class FilmController {
 		
 		Film found = filmService.findById(filmId);
 		
-		FilmDTO dto = new FilmDTO(found);
-		
-		findFilmGenre(dto); // attaches object Genre, but what if I want only the genre name to be displayed?
+		if (found!=null) {
+			return new ResponseEntity<>(new FilmDTO(found), HttpStatus.OK);
+		}
 				
-		return new ResponseEntity<>(dto, HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
 	@PostMapping("api/films/new")
-	public ResponseEntity<String> addFilm(@RequestBody AddFilmDTO newFilm) {
+	public ResponseEntity<FilmDTO> addFilm(@RequestBody AddFilmDTO newFilm) {
 		
 		Set<FilmGenre> genres = new HashSet<>();
 		
@@ -173,18 +147,9 @@ public class FilmController {
 		film.setGenres(genres);
 		film = filmService.save(film);
 		
-		return new ResponseEntity<>("Film added", HttpStatus.CREATED);
+		return new ResponseEntity<>(new FilmDTO(film), HttpStatus.CREATED);
 	}
 	
-	@PostMapping("api/genre/new")
-	public ResponseEntity<String> addGenre(@RequestBody GenreDTO newGenre) {
-		
-		Genre addGenre = new Genre();
-		addGenre.setGenre(newGenre.getGenre());
-		addGenre = genreService.save(addGenre);
-		
-		return new ResponseEntity<>("Genre created", HttpStatus.CREATED);
-	}
 	
 	@PutMapping("api/films/edit/{filmId}")
 	public ResponseEntity<FilmDTO> editFilm(@PathVariable long filmId,
@@ -199,6 +164,9 @@ public class FilmController {
 		// - change type (domestic or international),
 		// - add genres, and
 		// - remove genres.
+		
+		// ...what - all these ifs are not needed
+		// fix later
 		
 		if (editedFilm.getTitle()!=null) {
 			film.setTitle(editedFilm.getTitle());
@@ -227,7 +195,7 @@ public class FilmController {
 	}
 	
 	@DeleteMapping("api/film/{filmId}")
-	public ResponseEntity<String> deleteFilmById (@PathVariable long filmId) {
+	public ResponseEntity<Void> deleteFilmById (@PathVariable long filmId) {
 		
 		Film toDel = filmService.findById(filmId);
 		
@@ -236,18 +204,17 @@ public class FilmController {
 				if (fg.getFilm().getId() == toDel.getId()) {
 					filmGenreService.delete(fg);
 				}
-			}); // will this work?
+			});
 		
 		filmService.delete(toDel); 
 		
-		return new ResponseEntity<>("Film deleted", HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	// anything related to genre so directly should be in
 	// genre controller, really
-	
 	@DeleteMapping("api/genre/{genreId}")
-	public ResponseEntity<String> deleteGenre(@PathVariable long genreId) {
+	public ResponseEntity<Void> deleteGenre(@PathVariable long genreId) {
 		
 		// find the genre
 		Genre toDel = genreService.findById(genreId);
@@ -263,7 +230,43 @@ public class FilmController {
 		// finally, remove genre itself
 		genreService.delete(toDel);
 		
-		return new ResponseEntity<>("Genre deleted", HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	// this should be in genre controller too
+	@PostMapping("api/genre/new")
+	public ResponseEntity<GenreDTO> addGenre(@RequestBody GenreDTO newGenre) {
+		
+		Genre addGenre = new Genre();
+		addGenre.setGenre(newGenre.getGenre());
+		addGenre = genreService.save(addGenre);
+		
+		return new ResponseEntity<>(new GenreDTO(addGenre), HttpStatus.CREATED);
+	}
+	
+	
+	// search by year of release and by year range
+	// i decided not to use these
+	
+	@GetMapping("api/films/year")
+	public ResponseEntity<List<FilmDTO>> findFilmByYear(@RequestParam int query) {
+		
+		List<FilmDTO> dtos = filmService.findByYear(query).stream()
+							.map(FilmDTO::new)
+							.collect(Collectors.toList());
+		
+		return new ResponseEntity<>(dtos, HttpStatus.OK);
+	}
+	
+	@GetMapping("api/films/period")
+	public ResponseEntity<List<FilmDTO>> findFilmsByYearRange(@RequestParam int from, 
+															@RequestParam int to) {
+		
+		List<FilmDTO> dtos = filmService.findByYearRage(to, from).stream()
+							.map(FilmDTO::new)
+							.collect(Collectors.toList());
+		
+		return new ResponseEntity<>(dtos, HttpStatus.OK);
+		
+	}
 }

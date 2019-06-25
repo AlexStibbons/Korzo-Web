@@ -1,6 +1,7 @@
 package korzoApp.web.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import korzoApp.model.Film;
 import korzoApp.model.FilmGenre;
@@ -46,6 +47,9 @@ public class FilmDTO implements Comparable<FilmDTO> {
 		this.year = film.getYear();
 		this.domestic = film.isDomestic();
 		this.storage = film.getStorage();
+		this.genres = film.getGenres().stream()
+					.map(GenreDTO::new)
+					.collect(Collectors.toList());
 	}
 	
 	public FilmDTO(FilmGenre filmGenre) {
@@ -54,6 +58,9 @@ public class FilmDTO implements Comparable<FilmDTO> {
 		this.year = filmGenre.getFilm().getYear();
 		this.domestic = filmGenre.getFilm().isDomestic();
 		this.storage = filmGenre.getFilm().getStorage();
+		this.genres = filmGenre.getFilm().getGenres().stream()
+						.map(GenreDTO::new)
+						.collect(Collectors.toList());
 	}
 
 	public long getId() {

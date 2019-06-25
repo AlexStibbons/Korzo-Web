@@ -30,18 +30,14 @@ public class FilmService {
 		filmRepository.delete(film);
 	}
 	
-	public List<Film> findAll() {
-		return filmRepository.findAll(); // ORDER ALPHABETICALLY
+	public Page<Film> findAllOrdered(Pageable page) {
+		return filmRepository.findAllByOrderByTitleAsc(page);
 	}
 	
-	public Page<Film> findAll(Pageable page) {
-		return filmRepository.findAll(page);
+	public Page<Film> findTitleOrdered(String title, Pageable page) {
+		return filmRepository.findByTitleContainsIgnoreCaseOrderByTitleAsc(title, page);
 	}
-	
-	
-	public List<Film> findByTitle(String title) {
-		return filmRepository.findByTitleContainsIgnoreCase(title);
-	}
+
 	
 	public List<Film> findByYear(int year) {
 		return filmRepository.findByYear(year);
@@ -55,6 +51,7 @@ public class FilmService {
 		return filmRepository.findById(id).get();
 	}
 	
+	// do this but in page?
 	public List<FilmGenre> findByGenre(long genreId) {
 		
 		List<FilmGenre> found = filmGenreRepository.findAll().stream()
