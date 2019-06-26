@@ -10,14 +10,13 @@ import org.springframework.stereotype.Component;
 import korzoApp.model.Film;
 
 @Component
-public interface FilmRepository extends JpaRepository<Film, Long>{
-
-	// page all of these
-	public List<Film> findByTitleContainsIgnoreCase(String film);
-	public List<Film> findByYear(int year); // order alphabetically
-	public List<Film> findByYearGreaterThanAndYearLessThan(int greater, int less); // year range
+public interface FilmRepository extends JpaRepository<Film, Long>{ 
 	
 	public Page<Film> findAllByOrderByTitleAsc(Pageable page);
 	
 	public Page<Film> findByTitleContainsIgnoreCaseOrderByTitleAsc(String title, Pageable page);
+	
+	// find by year and year range --> why search films by year range at all? these are not needed 
+	public Page<Film> findByYear(int year, Pageable page);
+	public Page<Film> findByYearGreaterThanAndYearLessThan(int greater, int less, Pageable page);
 }

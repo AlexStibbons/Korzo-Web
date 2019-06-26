@@ -39,24 +39,22 @@ public class FilmService {
 	}
 
 	
-	public List<Film> findByYear(int year) {
-		return filmRepository.findByYear(year);
+	public Page<Film> findByYear(int year, Pageable page) {
+		return filmRepository.findByYear(year, page);
 	}
 	
-	public List<Film> findByYearRage(int greater, int less) {
-		return filmRepository.findByYearGreaterThanAndYearLessThan(greater, less);
+	public Page<Film> findByYearRage(int greater, int less, Pageable page) {
+		return filmRepository.findByYearGreaterThanAndYearLessThan(greater, less, page);
 	}
 	
 	public Film findById(long id) {
 		return filmRepository.findById(id).get();
 	}
 	
-	// do this but in page?
-	public List<FilmGenre> findByGenre(long genreId) {
+	
+	public Page<FilmGenre> findByGenrePage(long genreId, Pageable page) {
 		
-		List<FilmGenre> found = filmGenreRepository.findAll().stream()
-								.filter(f -> f.getGenre().getId() == genreId)
-								.collect(Collectors.toList());
+		Page<FilmGenre> found = filmGenreRepository.findByGenreIdOrderByFilmTitleAsc(genreId, page);
 		
 		return found;
 	}
