@@ -44,16 +44,6 @@ public class FilmController {
 	@Autowired
 	GenreService genreService;
 	
-	/*TODO || test in postman:
-		! change genres when changing film [???]
-		? delete a film [X] 
-		? delete a genre [X]
-		! change a genre [] */
-	
-	// the search will be a search form, so all of these 
-	//individual searches/get methods will be basically useless
-
-	
 	// find all, sort alphabetically
 	@GetMapping("api/films")
 	public ResponseEntity<Page<FilmDTO>> findAll(Pageable page) {
