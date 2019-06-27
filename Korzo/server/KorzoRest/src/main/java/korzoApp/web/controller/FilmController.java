@@ -97,72 +97,56 @@ public class FilmController {
 
 	}
 	
-	@GetMapping("api/test/{genreId}")
+	@GetMapping("api/test/{genreId}") // change so that id is param, not path variable
 	public ResponseEntity<PagedListHolder<FilmDTO>> testing(@PathVariable long genreId, 
-															@RequestParam(required = false) String title,
+															@RequestParam(required = false, defaultValue = "") String title,
 															Pageable page) {
 		
 		// 1. get list of films by title
 		List<Film> byTitle = filmService.findByTitleList(title);
-		
-		//how about just finding by title and then filtering it?
-		
-		List<Film> total = new ArrayList<>();
-		
-		// something is wrong in stream below
-		byTitle.stream()
-		.forEach(film -> { FilmGenre fg = film.getGenres().stream()
-										.filter(g -> g.getGenre().getId() == genreId)
-										.findFirst().get();
-							if (fg != null) {
-								total.add(fg.getFilm());
-								}
-							}
-				
-				);
-		
-		List<FilmDTO> foundDtos = total.stream()
-							.map(FilmDTO::new)
-							.collect(Collectors.toList());
-		
-		PagedListHolder<FilmDTO> dto3 = new PagedListHolder<FilmDTO>(foundDtos);
-		dto3.setPageSize(page.getPageSize());
-		dto3.setPage(page.getPageNumber());
-		
-		return new ResponseEntity<>(dto3, HttpStatus.OK);
-		
-		/* OLD CODE
-		 * 
 		// 2. get list of films by genre
 		List<Film> byGenre = filmService.findByGenreList(genreId);
 		
 		// 3. keep only the elements that appear in both lists
+		byTitle.retainAll(byGenre);
 		
-		// 4. trun those elements in Dtos
-		
-		// 5. create PagedListHolder
-		
-		
-		// combine lists
-		List<Film> combinedList = new ArrayList<>();
-		combinedList.addAll(byTitle);
-		combinedList.addAll(byGenre);
-		
-		// create dtos
-		List<FilmDTO> filmsDto = combinedList.stream()
+		// 4. turn those elements in Dtos
+		List<FilmDTO> filmDtos = byTitle.stream()
 								.map(FilmDTO::new)
 								.collect(Collectors.toList());
 		
-		Long totalNumber = Long.valueOf(filmsDto.size());
-		
+		// 5. create PagedListHolder
+		// because 		
 		// pageImpl does not return content in slices
-		Page<FilmDTO> dto = new PageImpl<FilmDTO>(filmsDto, page, totalNumber);
+		//Long totalNumber = Long.valueOf(filmsDto.size());
+		//Page<FilmDTO> dto = new PageImpl<FilmDTO>(filmsDto, page, totalNumber);
+		 
+		PagedListHolder<FilmDTO> dto = new PagedListHolder<FilmDTO>(filmDtos);
+		dto.setPageSize(page.getPageSize());
+		dto.setPage(page.getPageNumber());
 		
-		// trying PageHolder
-		PagedListHolder<FilmDTO> dto2 = new PagedListHolder<FilmDTO>(filmsDto);
-		dto2.setPageSize(page.getPageSize());
-		dto2.setPage(page.getPageNumber());
-		*/
+		return new ResponseEntity<>(dto, HttpStatus.OK);
+		
+		
+		//how about just finding by title and then filtering it?
+		/* not working - reports null value
+		 *  because of findFirst? or something in stream?
+	
+		List<Film> total = new ArrayList<>();
+		
+		for (Film film : byTitle) {
+			FilmGenre fg = film.getGenres().stream()
+								.filter(filmgenre -> filmgenre.getGenre().getId() == genreId)
+								.findFirst().get();
+			if (fg != null) {
+				total.add(film);
+			}
+		}
+		
+		List<FilmDTO> foundDtos = total.stream()
+							.map(FilmDTO::new)
+							.collect(Collectors.toList()); */
+
 	}
 
 	
