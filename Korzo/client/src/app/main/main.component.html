@@ -1,3 +1,71 @@
-<p>
-  main works!
-</p>
+<form (ngSubmit)="getFilms()">
+
+  <label for="input-title" id="label-title">Title: </label>
+  <input type="text" name="input-title" id="input-title" placeholder="..." [(ngModel)]="titleSearch" />
+
+  <input type="submit" value="Search" />
+</form>
+
+
+<div *ngIf="page">
+
+  <button [disabled]="page.first" class="uk-button-link" (click)="prev()"> Previous</button>
+  <button [disabled]="page.last" (click)="next()"> Next </button>
+
+  <table class="table table-striped table-hover">
+    <thead>
+      <th>
+        Film
+      </th>
+      <th>
+        Genre
+      </th>
+      <th>
+        Location in storage
+      </th>
+      <th>
+        Actions
+      </th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let film of page.content">
+        <td>
+          {{ film.title }} ({{ film.year }})
+        </td>
+        <td>
+          <div *ngIf="film.genres.length > 0">
+            <p>Genres:</p>
+            <ul *ngFor="let genre of film.genres">
+              <li>{{ genre.genre }}</li>
+            </ul>
+          </div>
+        </td>
+        <td>
+          {{ film. storage }}
+        </td>
+        <td>
+          <button (click)="details(film.id)">Details</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<br>
+<p> Unsure how the list of films is supposed to look like </p>
+  <div *ngFor="let film of page.content">
+    <div class="card">
+      <p> {{ film.title }} </p>
+      <p> {{ film.storage }} </p>
+      <div *ngIf="film.genres.length > 0">
+        <p>Genres:</p>
+        <ul *ngFor="let genre of film.genres">
+          <li>{{ genre.genre }}</li>
+        </ul>
+      </div>
+
+      <button (click)="details(film.id)">Details</button>
+    </div>
+  </div>
+
+
+</div>

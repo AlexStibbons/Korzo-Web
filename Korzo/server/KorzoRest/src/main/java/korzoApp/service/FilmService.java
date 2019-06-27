@@ -1,7 +1,7 @@
 package korzoApp.service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,5 +58,21 @@ public class FilmService {
 		
 		return found;
 	}
-
+	
+	public List<Film> findByTitleList(String title) {
+		return filmRepository.findByTitleContainsIgnoreCase(title);
+	}
+	
+	public List<Film> findByGenreList(long id) {
+		List<FilmGenre> filmgenre = filmGenreRepository.findByGenreId(id);
+		
+		List<Film> films = new ArrayList<>();
+		
+		filmgenre.stream()
+				.forEach(fg -> films.add(fg.getFilm()));
+		
+		return films;
+							
+	}
+ 
 }

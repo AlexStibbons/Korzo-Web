@@ -19,4 +19,7 @@ public interface FilmRepository extends JpaRepository<Film, Long>{
 	// find by year and year range --> why search films by year range at all? these are not needed 
 	public Page<Film> findByYear(int year, Pageable page);
 	public Page<Film> findByYearGreaterThanAndYearLessThan(int greater, int less, Pageable page);
+	
+	// testing combining film + genre search (see film controller)
+	public List<Film> findByTitleContainsIgnoreCase(String title);
 }

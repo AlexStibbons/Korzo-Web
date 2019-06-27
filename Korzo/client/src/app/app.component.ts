@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-import { AuthenticationService } from './security/authentication.service';
 
 import { Router } from '@angular/router';
 
@@ -10,16 +9,8 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
 
-  constructor(private authenticationService: AuthenticationService,
-              private router: Router){
+  constructor(){
   }
 
-  logout():void{
-    this.authenticationService.logout();
-    this.router.navigate(['/login']);
-  }
 
-  isLoggedIn():boolean{
-    return this.authenticationService.isLoggedIn();
-  }
 }

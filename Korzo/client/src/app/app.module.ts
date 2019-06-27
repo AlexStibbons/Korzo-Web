@@ -6,21 +6,21 @@ import { HttpClientModule } from '@angular/common/http'
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { LoginComponent } from './login/login.component';
-import { AuthenticationService } from './security/authentication.service';
-import { CanActivateAuthGuard } from './security/can-activate-auth.guard';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { TokenInterceptorService } from './security/token-interceptor.service';
-import { JwtUtilsService } from './security/jwt-utils.service';
+
 import { MainComponent } from './main/main.component';
+import { FilmComponent } from './film/film.component';
+import { AddFilmComponent } from './add-film/add-film.component';
+import { EditFilmComponent } from './edit-film/edit-film.component';
+import { GenreService } from './services/genre.service';
+import { FilmService } from './services/film.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent,
-    LoginComponent,
-    MainComponent
+    MainComponent,
+    FilmComponent,
+    AddFilmComponent,
+    EditFilmComponent
   ],
   imports: [
     BrowserModule,
@@ -29,14 +29,8 @@ import { MainComponent } from './main/main.component';
     AppRoutingModule
   ],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptorService,
-      multi: true
-    },
-    AuthenticationService,
-    CanActivateAuthGuard,
-    JwtUtilsService
+    FilmService,
+    GenreService
   ],
   bootstrap: [AppComponent]
 })

@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,6 @@ import korzoApp.service.FilmService;
 import korzoApp.service.GenreService;
 import korzoApp.web.dto.AddFilmDTO;
 import korzoApp.web.dto.FilmDTO;
-import korzoApp.web.dto.GenreDTO;
 
 @RestController
 public class FilmController {
@@ -72,6 +71,7 @@ public class FilmController {
 		
 		Page<FilmDTO> dto = new PageImpl<FilmDTO>(filmsDto, page, films.getTotalElements());
 		
+				
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 	
@@ -90,12 +90,81 @@ public class FilmController {
 			.forEach(f -> dtos.add(new FilmDTO(f.getFilm())));
 		
 		// the page is the same, but instead of binding table content (which would be 'filmId, genreId')
-		// what is now returned is the list of films
+		// what is now returned is a list of films
 		Page<FilmDTO> res = new PageImpl<FilmDTO>(dtos, page, found.getTotalElements());
 		
 		return new ResponseEntity<>(res, HttpStatus.OK);
 
 	}
+	
+	@GetMapping("api/test/{genreId}")
+	public ResponseEntity<PagedListHolder<FilmDTO>> testing(@PathVariable long genreId, 
+															@RequestParam(required = false) String title,
+															Pageable page) {
+		
+		// 1. get list of films by title
+		List<Film> byTitle = filmService.findByTitleList(title);
+		
+		//how about just finding by title and then filtering it?
+		
+		List<Film> total = new ArrayList<>();
+		
+		// something is wrong in stream below
+		byTitle.stream()
+		.forEach(film -> { FilmGenre fg = film.getGenres().stream()
+										.filter(g -> g.getGenre().getId() == genreId)
+										.findFirst().get();
+							if (fg != null) {
+								total.add(fg.getFilm());
+								}
+							}
+				
+				);
+		
+		List<FilmDTO> foundDtos = total.stream()
+							.map(FilmDTO::new)
+							.collect(Collectors.toList());
+		
+		PagedListHolder<FilmDTO> dto3 = new PagedListHolder<FilmDTO>(foundDtos);
+		dto3.setPageSize(page.getPageSize());
+		dto3.setPage(page.getPageNumber());
+		
+		return new ResponseEntity<>(dto3, HttpStatus.OK);
+		
+		/* OLD CODE
+		 * 
+		// 2. get list of films by genre
+		List<Film> byGenre = filmService.findByGenreList(genreId);
+		
+		// 3. keep only the elements that appear in both lists
+		
+		// 4. trun those elements in Dtos
+		
+		// 5. create PagedListHolder
+		
+		
+		// combine lists
+		List<Film> combinedList = new ArrayList<>();
+		combinedList.addAll(byTitle);
+		combinedList.addAll(byGenre);
+		
+		// create dtos
+		List<FilmDTO> filmsDto = combinedList.stream()
+								.map(FilmDTO::new)
+								.collect(Collectors.toList());
+		
+		Long totalNumber = Long.valueOf(filmsDto.size());
+		
+		// pageImpl does not return content in slices
+		Page<FilmDTO> dto = new PageImpl<FilmDTO>(filmsDto, page, totalNumber);
+		
+		// trying PageHolder
+		PagedListHolder<FilmDTO> dto2 = new PagedListHolder<FilmDTO>(filmsDto);
+		dto2.setPageSize(page.getPageSize());
+		dto2.setPage(page.getPageNumber());
+		*/
+	}
+
 	
 	@GetMapping("api/films/{filmId}")
 	public ResponseEntity<FilmDTO> findById(@PathVariable long filmId) {
