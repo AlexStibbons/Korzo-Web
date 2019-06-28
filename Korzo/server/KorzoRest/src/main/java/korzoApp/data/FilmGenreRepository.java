@@ -15,6 +15,6 @@ public interface FilmGenreRepository extends JpaRepository<FilmGenre, Long>{
 	public Page<FilmGenre> findByGenreIdOrderByFilmTitleAsc(long genreId, Pageable page);
 	
 	// testing combining film + genre search (see film controller)
-	public List<FilmGenre> findByGenreId(long id);
+	public List<FilmGenre> findByGenreId(Long id);
 
 }

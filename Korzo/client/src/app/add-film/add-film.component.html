@@ -1,3 +1,19 @@
 <p>
-  add-film works!
+  Missing from form:<br>
+  - dynamic checkboes for adding genres <br>
+  - static checkboxes for production boolean <br>
 </p>
+
+<form (ngSubmit)="addFilm()">
+
+    <label for="input-title" id="label-title">Title: </label>
+    <input type="text" name="input-title" id="input-title" [(ngModel)]="film.title" /> <br>
+
+    <label for="input-storage" id="label-storage">Location in storage: </label>
+    <input type="text" name="input-storage" id="input-storage" [(ngModel)]="film.storage" /> <br>
+
+  <label for="input-year" id="label-year">Release year: </label>
+  <input type="text" name="input-year" id="input-year" [(ngModel)]="film.year" /> <br>
+
+  <input type="submit" value="Add film"/>
+</form>

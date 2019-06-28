@@ -14,17 +14,17 @@ export class FilmService {
     return this.http.get<any>(`/api/films/title?q=${title}&page=${page}&size=3`);
   }
 
-  getFilm(id:number): Observable<Film> {
+  getFilm(id: number): Observable<Film> {
     return this.http.get<Film>(`/api/films/${id}`);
   }
 
-  getFilmsByGenre(page: number, genreId: number): Observable<any> {
-    return this.http.get<any>(`/api/films/genre/${genreId}?page=${page}&size=3`);
+  getSearch(page: number, title: string, genreId: number): Observable<any> {
+    return this.http.get<any>(`/api/search/${genreId}?title=${title}&page=${page}&size=3`);
   }
 
   addFilm(film: Film): Observable<Film> {
-    let headers = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<Film>(`/api/films/new`, JSON.stringify(film), {headers});
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json'});
+    return this.http.post<Film>('/api/films/new', JSON.stringify(film), {headers});
   }
 
   editFilm(film: Film, filmId: number): Observable<Film> {
@@ -34,6 +34,11 @@ export class FilmService {
 
   deleteFilm(id:number): Observable<void> {
     return this.http.delete<void>(`/api/film/${id}`);
+  }
+
+  // depricated function
+  getFilmsByGenre(page: number, genreId: number): Observable<any> {
+    return this.http.get<any>(`/api/films/genre/${genreId}?page=${page}&size=3`);
   }
 
 }

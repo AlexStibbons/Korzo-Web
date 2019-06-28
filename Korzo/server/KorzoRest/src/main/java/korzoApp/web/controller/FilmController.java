@@ -97,13 +97,15 @@ public class FilmController {
 
 	}
 	
-	@GetMapping("api/test/{genreId}") // change so that id is param, not path variable
-	public ResponseEntity<PagedListHolder<FilmDTO>> testing(@PathVariable long genreId, 
+	// find by genre AND title
+	@GetMapping("api/search/{genreId}") // hm, can't make it work if genreId is Param
+	public ResponseEntity<PagedListHolder<FilmDTO>> testing(@PathVariable Long genreId, 
 															@RequestParam(required = false, defaultValue = "") String title,
 															Pageable page) {
 		
 		// 1. get list of films by title
 		List<Film> byTitle = filmService.findByTitleList(title);
+		
 		// 2. get list of films by genre
 		List<Film> byGenre = filmService.findByGenreList(genreId);
 		
@@ -188,8 +190,11 @@ public class FilmController {
 			}
 		}
 		
-		film.setGenres(genres);
-		film = filmService.save(film);
+		if (!genres.isEmpty()) {
+			film.setGenres(genres);
+			film = filmService.save(film);
+		}
+		
 		
 		return new ResponseEntity<>(new FilmDTO(film), HttpStatus.CREATED);
 	}

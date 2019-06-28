@@ -3,7 +3,7 @@ interface FilmInterface {
   title: string;
   year?: number;
   storage: string;
-  isDomestic?: boolean;
+  domestic?: boolean;
   genres?: Genre[];
 }
 
@@ -12,7 +12,7 @@ export class Film implements FilmInterface {
   public title: string;
   public year?: number;
   public storage: string;
-  public isDomestic?: boolean;
+  public domestic?: boolean;
   public genres?: Genre[];
 
   constructor(spec: FilmInterface) {
@@ -20,7 +20,7 @@ export class Film implements FilmInterface {
     this.title = spec.title;
     this.year = spec.year;
     this.storage = spec.storage;
-    this.isDomestic = spec.isDomestic;
+    this.domestic = spec.domestic;
     this.genres = spec.genres;
   }
 }
@@ -37,5 +37,30 @@ export class Genre implements GenreInterface {
   constructor(spec: GenreInterface) {
     this.id = spec.id;
     this.genre = spec.genre;
+  }
+}
+
+interface AddFilmIntr {
+  title: string;
+  year?: number;
+  domestic?: boolean;
+  storage: string;
+  genreIds?: number[];
+}
+
+export class AddFilm implements AddFilmIntr {
+
+  public title: string;
+  public year?: number;
+  public domestic?: boolean;
+  public storage: string;
+  public genreIds?: number[];
+
+  constructor(spec: AddFilmIntr) {
+    this.title = spec.title;
+    this.year = spec.year;
+    this.domestic = spec.domestic;
+    this.storage = spec.storage;
+    this.genreIds = spec.genreIds;
   }
 }

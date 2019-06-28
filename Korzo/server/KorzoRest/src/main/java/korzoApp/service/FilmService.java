@@ -63,7 +63,7 @@ public class FilmService {
 		return filmRepository.findByTitleContainsIgnoreCase(title);
 	}
 	
-	public List<Film> findByGenreList(long id) {
+	public List<Film> findByGenreList(Long id) {
 		List<FilmGenre> filmgenre = filmGenreRepository.findByGenreId(id);
 		
 		List<Film> films = new ArrayList<>();
