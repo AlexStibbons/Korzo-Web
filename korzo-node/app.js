@@ -11,8 +11,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // connect to database
-/*
+
 mongoose.Promise = global.Promise;
+
 mongoose.connect( config.localDB, {
     useNewUrlParser: true
 }).then( () => {
@@ -20,7 +21,7 @@ mongoose.connect( config.localDB, {
 }).catch( err => {
     console.log('No conection. Exiting', err);
     process.exit();
-}); */
+}); 
 
 // set the default route
 app.get('/', (req, res) => {
