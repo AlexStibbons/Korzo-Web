@@ -69,9 +69,16 @@ exports.findByTitle = (request, response) => {
         });
 }
 
+// not sure $elemMatch is needed here
+// for ex, if the query is 'drama,' the result
+// should be all documents that contain 'drama' in
+// their genre array
+// there's no multiple criteria here
 exports.findByGenre = (request, response) => {
     Film.find({genre: { $regex: request.query.genre, $options: 'i'} })
-        .then()
+        .then( films =>{
+            response.send(films);
+        })
         .catch(err => {
             response.status(500).send({
                 message: err.message || "Something went wrong. Please, try again."
