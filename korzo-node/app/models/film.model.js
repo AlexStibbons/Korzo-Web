@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 // the model is
 const FilmSchema = mongoose.Schema(
     {
-        title: {type: String, lowercase: true, required: true},
+        title: {type: String, required: true},
         year: Number,
         isDomestic: Boolean,
-        storage: {type: String, lowercase: true, required: true},
-        genres: [ {type: String, lowercase: true} ] // add reference to genre here
+        storage: {type: String, required: true},
+        genres: [String] // later, add reference to genre here 
     },
     {
         timestamps: true
@@ -16,3 +16,7 @@ const FilmSchema = mongoose.Schema(
 ); 
 
 module.exports = mongoose.model('Film', FilmSchema);
+
+// so
+// if I understand this correctly, mongoose does something similar
+// to Hibernate/Spring Data JPA?

@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 // connect to database
 /*
 mongoose.Promise = global.Promise;
-mongoose.connect( config.dbUrl, {
+mongoose.connect( config.localDB, {
     useNewUrlParser: true
 }).then( () => {
     console.log('Connected to database.');
@@ -24,8 +24,10 @@ mongoose.connect( config.dbUrl, {
 
 // set the default route
 app.get('/', (req, res) => {
-    res.json({"message": "welcome to the cinema"});
+    res.json({"message": "welcome to Korzo"});
 });
+
+require('./app/routes/film.routes')(app);
 
 // set the port
 app.listen(config.serverport, () => {
