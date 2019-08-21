@@ -12,10 +12,11 @@ module.exports = (app) => {
     app.get('/films/:filmId', filmController.findById);
 
     // findTitle
-    app.get('/films/title', filmController.findByTitle);
+    app.get('/title', filmController.findByTitle);
 
     // findGenre
-    app.get('/films/genre', filmController.findByGenre);
+    // same issue as search below
+    app.get('/genre', filmController.findByGenre);
 
     // update
     app.put('/films/:filmId', filmController.updateFilm);
@@ -24,5 +25,8 @@ module.exports = (app) => {
     app.delete('/films/:filmId', filmController.delete);
 
     // search
-    app.get('/films/search', filmController.findByTitleAndGenre);
+    // '/search' works 
+    // BUT
+    // '/films/search' does not???
+    app.get('/search', filmController.findByTitleAndGenre);
 }

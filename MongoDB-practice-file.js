@@ -117,6 +117,7 @@ db.posts.update( {title : 'post four'},
     }
 )
 
+
 // increment a value by, in this case, 2
 db.posts.update({title: 'Post one'},
 {
@@ -169,3 +170,8 @@ db.posts.find(
         }
     }
 ).pretty()
+
+db.films.find( 
+    {title: {$regex: 'pos', $options: 'i'}}, 
+    {genres: {$regex: 'drama', $options:'i'}}
+    ).pretty()
