@@ -29,4 +29,6 @@ module.exports = (app) => {
     // BUT
     // '/films/search' does not???
     app.get('/search', filmController.findByTitleAndGenre);
+
+    app.get('/random', filmController.randomFilm);
 }

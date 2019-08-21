@@ -1,9 +1,23 @@
 # Korzo-Web
 
-## Korzo
-
-This folder contains a backend + frontend built with Java Spring Boot and Angular (same stack used for [reddiu](https://github.com/AlexStibbons/reddiu) ). I decided to abandon it in favour of exploring the MERN strack.
+Korzo-Web is, for now, a Node.js REST API. 
 
 ## korzo-node
 
 The M, E, and N of the MERN stack.
+
+A simple, CRUD REST API build using Node.js, Express, MongoDB (mongoose).
+
+Films can be added, deleted, updated, and fetched.
+
+Alongside getting all films, they can be fetched by several criteria: _id, title, genre, genre and title, or a film can be chosen randomly.
+
+### To Do
+
+* reorganize routes
+* should an self-incrementing id be added to schemas?
+
+## Korzo
+
+This folder contains a backend + frontend built with Java Spring Boot and Angular (same stack used for [reddiu](https://github.com/AlexStibbons/reddiu) ). I decided to abandon it in favour of exploring the MERN strack.
+

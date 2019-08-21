@@ -151,3 +151,22 @@ exports.findByTitleAndGenre = (req, res) => {
             });
         });
 }
+
+exports.randomFilm = (req, res) => {
+  //db.films.aggregate([{ $sample: { size: 1 } }]).pretty();
+  Film.aggregate([
+    {
+      $sample: {
+        size: 1
+      }
+    }
+  ])
+    .then(film => {
+      res.send(film);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "something went wrong"
+      });
+    });
+};
