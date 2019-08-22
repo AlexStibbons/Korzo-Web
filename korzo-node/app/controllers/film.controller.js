@@ -46,8 +46,7 @@ exports.findAll = (req, res) => {
 }
 
 exports.findById = (req, res) => {
-    Film.findById(req.params.filmId) // except there is no film id [aside from the automatic key
-                                        // and that is not one single number]?
+    Film.findById(req.params.filmId) 
         .then(film => {
             res.send(film);
         }).catch(err => {
@@ -57,9 +56,8 @@ exports.findById = (req, res) => {
         });
 }
 
-// command works in mongo, but not here
 exports.findByTitle = (req, res) => {
-    console.log(req.query);
+
     let query = req.query.title;
     Film.find( { title: { $regex: query, $options: 'i' } } ) // the DB query
         .then( films => { // sending the DB res onward
@@ -72,15 +70,9 @@ exports.findByTitle = (req, res) => {
         });
 }
 
-// not sure $elemMatch is needed here
-// for ex, if the query is 'drama,' the result
-// should be all documents that contain 'drama' in
-// their genre array
-// there's no multiple criteria here
-// works in mongo
 exports.findByGenre = (req, res) => {
-    console.log(req.query);
-    let query = req.query.genre; // can't recognize req.query in mongo query? why?
+
+    let query = req.query.genre; 
     Film.find({genres: { $regex: query, $options: 'i'} })
         .then( films =>{
             res.send(films);
@@ -118,7 +110,7 @@ exports.updateFilm = (req, res) => {
         })
 }
 
-exports.delete = (req, res) => {
+exports.deleteFilm = (req, res) => {
     Film.findByIdAndDelete(req.params.filmId)
         .then( film => {
             res.send({ message: "success!"});
@@ -131,12 +123,10 @@ exports.delete = (req, res) => {
         })
 }
 
-// TBD
 exports.findByTitleAndGenre = (req, res) => {
-    console.log(req.query);
+
     let title = req.query.title;
     let genre = req.query.genre;
-
 
     Film.find( {
         title: {$regex: title, $options: 'i'},
@@ -153,7 +143,7 @@ exports.findByTitleAndGenre = (req, res) => {
 }
 
 exports.randomFilm = (req, res) => {
-  //db.films.aggregate([{ $sample: { size: 1 } }]).pretty();
+
   Film.aggregate([
     {
       $sample: {

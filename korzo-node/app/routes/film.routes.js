@@ -1,34 +1,22 @@
-module.exports = (app) => {
-    // import dependency
-    const filmController = require('../controllers/film.controller');
+const express = require('express');
+const filmController = require('../controllers/film.controller');
+const router = express.Router();
 
-    // create
-    app.post('/add', filmController.addFilm);
+router.get('/', filmController.findAll);
 
-    // findAll
-    app.get('/films', filmController.findAll);
+router.get('/title', filmController.findByTitle);
 
-    // findById
-    app.get('/films/:filmId', filmController.findById);
+router.get('/genre', filmController.findByGenre);
 
-    // findTitle
-    app.get('/title', filmController.findByTitle);
+router.get('/search', filmController.findByTitleAndGenre);
 
-    // findGenre
-    // same issue as search below
-    app.get('/genre', filmController.findByGenre);
+router.get('/random', filmController.randomFilm);
 
-    // update
-    app.put('/films/:filmId', filmController.updateFilm);
+router.post('/new', filmController.addFilm);
 
-    // delete
-    app.delete('/films/:filmId', filmController.delete);
+router.route('/:filmId')
+        .get(filmController.findById)
+        .put(filmController.updateFilm)
+        .delete(filmController.deleteFilm);
 
-    // search
-    // '/search' works 
-    // BUT
-    // '/films/search' does not???
-    app.get('/search', filmController.findByTitleAndGenre);
-
-    app.get('/random', filmController.randomFilm);
-}
+module.exports = router;
