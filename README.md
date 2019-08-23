@@ -17,7 +17,4 @@ Alongside getting all films, they can be fetched by several criteria: _id, title
 * should an self-incrementing id be added to schemas?
 * a many-to-many relationship between film and genre?
 
-## Korzo
-
-This folder contains a backend + frontend built with Java Spring Boot and Angular (same stack used for [reddiu](https://github.com/AlexStibbons/reddiu) ). I decided to abandon it in favour of exploring the MERN strack.
 
