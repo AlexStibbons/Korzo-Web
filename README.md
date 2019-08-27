@@ -14,7 +14,8 @@ Alongside getting all films, they can be fetched by several criteria: _id, title
 
 ### To Do
 
+* find out more about error handling in node js
 * should an self-incrementing id be added to schemas?
-* a many-to-many relationship between film and genre?
+* a many-to-many relationship between film and genre? 
 
 

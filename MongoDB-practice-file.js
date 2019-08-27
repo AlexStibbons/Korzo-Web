@@ -20,7 +20,7 @@ db.createCollection('posts')
 
 // now insert documents/data
 // db. -> current database
-// db.posts -> the collection in which data is interted
+// db.posts -> the collection in which data is enterted
 db.posts.insert(
     {
         title: 'Post one',
@@ -61,7 +61,7 @@ db.posts.insertMany([
 ])
 
 // find all from collection [in this case posts]
-db.posts.find() // gets all; appent .pretty() for more readibility
+db.posts.find() // gets all; appent .pretty() for more readability
 
 // find by parameter
 // similar to where clause
@@ -170,8 +170,3 @@ db.posts.find(
         }
     }
 ).pretty()
-
-db.films.find( 
-    {title: {$regex: 'pos', $options: 'i'}}, 
-    {genres: {$regex: 'drama', $options:'i'}}
-    ).pretty()
